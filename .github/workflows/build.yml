@@ -21,6 +21,16 @@ jobs:
 
       - name: Test
         run: ./gradlew build
+      - name: 'Compilation'
+        run: |
+          mvn clean install -DskipTests -pl retrofit -am
+      - name: 'Run Test w/o NonDex'
+        run: |
+          mvn -pl retrofit test -Dtest=retrofit2.CompletableFutureAndroidTest#completableFutureApi24
+      - name: 'Run Test with NonDex'
+        run: |
+           mvn -pl retrofit edu.illinois:nondex-maven-plugin:2.1.1:nondex -Dtest=retrofit2.CompletableFutureAndroidTest#completableFutureApi24
+
 
   android:
     runs-on: macos-latest
@@ -93,12 +103,3 @@ jobs:
         env:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
-      - name: 'Compilation'
-        run: |
-          mvn clean install -DskipTests -pl retrofit -am
-      - name: 'Run Test w/o NonDex'
-        run: |
-          mvn -pl retrofit test -Dtest=retrofit2.CompletableFutureAndroidTest#completableFutureApi24
-      - name: 'Run Test with NonDex'
-        run: |
-           mvn -pl retrofit edu.illinois:nondex-maven-plugin:2.1.1:nondex -Dtest=retrofit2.CompletableFutureAndroidTest#completableFutureApi24
